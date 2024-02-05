@@ -82,7 +82,7 @@ curl --location 'http://localhost:8000/leftover/bulk' \
 curl --location 'localhost:8000/history?start=2014-01-01&end=2024-02-02&book=1'
 
 curl --location 'localhost:8000/history
-: This case set start and end for today date and check all book
+: This case sets start and end for today date and check all book
 ```
 
 
