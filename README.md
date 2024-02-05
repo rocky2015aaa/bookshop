@@ -12,13 +12,13 @@ Book inventory management test sample
 
 Clone the repository:
 
-    ```
-    git clone https://github.com/rocky2015aaa/bookshop.git
-    ```
+```
+git clone https://github.com/rocky2015aaa/bookshop.git
+```
 
 ## Usage
 
-```bash
+```
 make
 ```
 
