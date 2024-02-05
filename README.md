@@ -20,5 +20,8 @@ Clone the repository:
 
 ```bash
 make
+```
 
 ## API reference
+
+Check `openapi.yaml`
