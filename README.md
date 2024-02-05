@@ -13,7 +13,7 @@ Book inventory management test sample
 Clone the repository:
 
     ```
-    git clone https://github.com/your_username/project_name.git
+    git clone https://github.com/rocky2015aaa/bookshop.git
     ```
 
 ## Usage
