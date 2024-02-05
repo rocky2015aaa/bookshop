@@ -1,0 +1,559 @@
+openapi: 3.0.3
+info:
+  title: Bookshop Server API
+  description: |-
+    This is a Bookshop Server API based on the OpenAPI 3.0 specification.  
+  
+  version: "0.1"
+servers:
+  - url: https://domain/api/v1
+tags:
+  - name: ping
+    description: Test server connection
+  - name: author
+    description: Access and manage author data
+  - name: book
+    description: Access and manage book data
+  - name: inventory
+    description: Access and manage book inventory data
+paths:
+  /ping:
+    get:
+      tags:
+        - ping
+      summary: test ping api
+      description: test ping api
+      operationId: ping
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/BasicResponse'
+                - type: object
+                  required:
+                    - data
+                  properties:
+                    data:
+                      type: string
+                      example: "ping"
+        '405':
+          description: Invalid http method
+        '500':
+          description: Internal error
+  /author:
+    post:
+      tags:
+        - author
+      summary: Add an author
+      description: Add an author with meta data
+      operationId: add_author
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  description: author name
+                  example: "test author"
+                birth_date:
+                  type: string 
+                  description: author birth date(YYYY-MM-DD)
+                  example: "1979-11-11"
+        description: Create author data
+        required: true
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: author id
+                            example: 1
+        '422':
+          description: Invaild request data
+        '500':
+          description: Internal error
+  /author/{author_id}:
+    get:
+      tags:
+        - author
+      summary: Get an author 
+      description: Finds an author by id
+      operationId: get_author_by_id
+      parameters:
+        - in: path
+          name: author_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the author id
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/BasicResponse'
+                - type: object
+                  required:
+                    - data
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: author id
+                          example: 1
+                        name:
+                          type: string
+                          description: author name
+                          example: "test author"
+                        birth_date:
+                          type: string
+                          description: birth_date(YYYY-MM-DD)
+                          example: "1979-11-11"
+        '404':
+          description: No author found
+        '500':
+          description: Internal error
+  /book:
+    post:
+      tags:
+        - book
+      summary: Add a book
+      description: Add a book with meta data
+      operationId: add_book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                barcode:
+                  type: string
+                  description: book barcode number string
+                  example: "11245"
+                title:
+                  type: string 
+                  description: book title
+                  example: "test book"
+                publish_year:
+                  type: string
+                  description: publish year
+                  example: "2000"
+                author:
+                  type: integer 
+                  description: author id
+                  example: 1
+        description: Created book data
+        required: true
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: book id
+                            example: 1
+        '422':
+          description: Invaild request data
+        '500':
+          description: Internal error
+    get:
+      tags:
+        - book
+      summary: Get a book by barcode
+      description: Finds a book by barcode
+      operationId: get_book_by_barcode
+      parameters:
+        - in: query
+          name: barcode
+          schema:
+            type: integer
+          required: true
+          description: barcode string of the book
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/BasicResponse'
+                - type: object
+                  required:
+                    - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: book id
+                            example: 1
+                          title:
+                            type: string
+                            description: book title
+                            example: "test book"
+                          barcode:
+                            type: string
+                            description: book barcode number string
+                            example: "11245"
+                          author:
+                            type: object
+                            description: author data
+                            properties:
+                              name:   
+                                type: string
+                                description: author name
+                                example: "test author"  
+                              birth_date:   
+                                type: string
+                                description: author birth_date
+                                example: "1979-11-11"
+                          publish_year:
+                            type: integer
+                            description: publish year
+                            example: 2000
+                          quantity:
+                            type: integer
+                            description: number of book inventory
+                            example: 10
+        '422':
+          description: Invalid request (missing query)
+        '500':
+          description: Internal error
+  /book/{book_id}:
+    get:
+      tags:
+        - book
+      summary: Get a book 
+      description: Finds a book by id
+      operationId: get_book_by_id
+      parameters:
+        - in: path
+          name: book_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the book id
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/BasicResponse'
+                - type: object
+                  required:
+                    - data
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: book id
+                          example: 1
+                        title:
+                          type: string
+                          description: book title
+                          example: "test book"
+                        barcode:
+                          type: string
+                          description: book barcode number string
+                          example: "11245"
+                        author_id:
+                          type: integer
+                          description: author id
+                          example: 1
+                        publish_year:
+                          type: integer
+                          description: publish year
+                          example: 2000
+                        quantity:
+                          type: integer
+                          description: number of book inventory
+                          example: 10
+        '404':
+          description: No book found
+        '500':
+          description: Internal error
+  /leftover/add:
+    post:
+      tags:
+        - inventory
+      summary: Add book inventory added record
+      description: Add book inventory added record
+      operationId: add_inventory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                barcode:
+                  type: string
+                  description: book barcode number string
+                  example: "11245"
+                quantity:
+                  type: integer
+                  description: positive number of book inventory
+                  example: 10
+        description: Created inventory data
+        required: true
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/BasicResponse'
+                - type: object
+                  required:
+                    - data
+                  properties:
+                    data:
+                      type: object
+                      description: added book inventory record
+                      properties:
+                        barcode:
+                          type: string
+                          description: book barcode number string
+                          example: "11245"
+                        quantity:
+                          type: integer
+                          description: number of book inventory
+                          example: 10
+        '422':
+          description: Invalid request
+        '500':
+          description: Internal error
+  /leftover/remove:
+    post:
+      tags:
+        - inventory
+      summary: Add book inventory reduced record
+      description: Add book inventory reduced record
+      operationId: remove_inventory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                barcode:
+                  type: string
+                  description: book barcode number string
+                  example: "11245"
+                quantity:
+                  type: integer
+                  description: positive number of book inventory
+                  example: 10
+        description: Created inventory data
+        required: true
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/BasicResponse'
+                - type: object
+                  required:
+                    - data
+                  properties:
+                    data:
+                      type: object
+                      description: reduced book inventory record
+                      properties:
+                        barcode:
+                          type: string
+                          description: book barcode number string
+                          example: "11245"
+                        quantity:
+                          type: integer
+                          description: number of book inventory
+                          example: 10
+        '422':
+          description: Invalid request
+        '500':
+          description: Internal error
+  /leftover/bulk:
+    post:
+      tags:
+        - inventory
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              description: reduced book inventory record
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: file to upload
+      responses:
+          '201':
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  allOf:
+                  - $ref: '#/components/schemas/BasicResponse'
+                  - type: object
+                    required:
+                      - data
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            inventory_id:
+                              type: integer
+                              description: book inventory id
+                              example: 1
+                            book_id:
+                              type: integer
+                              description: book id
+                              example: 1
+                            quantity:
+                              type: integer
+                              description: book quantity
+                              example: 1
+                            date:
+                              type: string
+                              description: inventory date
+                              example: "1999-12-21"
+          '422':
+            description: Invalid request
+          '500':
+            description: Internal error
+  /history:
+    get:
+      tags:
+        - inventory
+      summary: Get a book inventory history
+      description: Finds a book inventory history by date and book id
+      operationId: get_history
+      parameters:
+        - in: query
+          name: book
+          schema:
+            type: string
+          description: book id string
+        - in: query
+          name: start
+          schema:
+            type: string
+          description: start date to check
+        - in: query
+          name: end
+          schema:
+            type: string
+          description: end date to check
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/BasicResponse'
+                - type: object
+                  required:
+                    - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          book:
+                            type: object
+                            description: book data
+                            properties:
+                              key:
+                                type: integer
+                                description: book id
+                                example: 1
+                              title:
+                                type: string
+                                description: book title
+                                example: "test book"
+                              barcode:
+                                type: string
+                                description: book barcode
+                                example: "12121"
+                          start_balance:
+                            type: integer
+                            description: start date book inventory balance
+                            example: 1
+                          end_balance:
+                            type: integer
+                            description: end date book inventory balance
+                            example: 1
+                          history:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                date:
+                                  type: string
+                                  description: book inventory date
+                                  example: "1979-10-10"
+                                quantity:
+                                  type: integer
+                                  description: book inventory quantity
+                                  example: 1
+        '404':
+          description: no book history data
+        '422':
+          description: Invalid request
+        '500':
+          description: Internal error                  
+components:
+  schemas:
+    BasicResponse:
+      type: object
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: boolean
+          description: the boolean value if request has been successful or not 
+          example: true
+        message:
+          type: string
+          description: the description of the request result
+          example: Proper messages for the situations

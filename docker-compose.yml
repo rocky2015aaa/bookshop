@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  bookshop:
+    container_name: bookshop
+    image: rocky2017aaa/bookshop
+    env_file:
+      - .env.docker
+    ports:
+      - "8000:8000"
+    restart: always
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    links:
+        - postgres_db
+    networks:
+      - mynetwork
+
+
+  postgres_db:
+    container_name: postgres_db
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1q2w3e4r
+      POSTGRES_DB: bookshop
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - $HOME/data/postgresql:/var/lib/postgresql/data
+    ports:
+      - "6000:5432"
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
