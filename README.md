@@ -22,7 +22,7 @@ git clone https://github.com/rocky2015aaa/bookshop.git
 make
 ```
 
-## API reference
+## API Reference
 
 Check `openapi.yaml`
 
