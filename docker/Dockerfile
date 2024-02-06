@@ -22,6 +22,6 @@ FROM base
 COPY --from=build /venv/ /venv/
 ENV PATH=/venv/bin:$PATH
 
-COPY ./ ./
+COPY ../ ./
 EXPOSE 8000
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

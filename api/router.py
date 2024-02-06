@@ -6,9 +6,9 @@ import pandas as pd
 from fastapi import APIRouter, HTTPException, UploadFile, Depends, File, Query 
 from fastapi.responses import JSONResponse
 
-from database import get_session
+from database.database import get_session
 from errors import EntityNotFoundError, ValidityError
-from handlers import *
+from api.handlers import *
 from models import *
 from responses import Response
 from utils import logger, get_barcode_quantity_datagram_from_bytes

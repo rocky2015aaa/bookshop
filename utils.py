@@ -30,3 +30,23 @@ def get_barcode_quantity_datagram_from_bytes(data):
             })
             brc_line = None
     return pd.DataFrame(inventory_pairs)
+
+
+def model_to_dict(model_instance):
+    """
+    Convert a SQLAlchemy model instance to a dictionary.
+    """
+    result = {}
+    for column in model_instance.__table__.columns:
+        result[column.name] = getattr(model_instance, column.name)
+    return result
+
+
+def model_list_to_dict_list(model_list):
+    """
+    Convert a list of SQLAlchemy model instances to a list of dictionaries.
+    """
+    dict_list = []
+    for model_instance in model_list:
+        dict_list.append(model_to_dict(model_instance))
+    return dict_list

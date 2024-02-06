@@ -4,9 +4,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from asyncio import Event
 
-from router import router
-from database import create_db_and_tables
-from handlers import *
+from api.router import router
+from database.database import create_db_and_tables
+from api.handlers import *
 from models import *
 from utils import logger
 

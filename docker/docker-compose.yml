@@ -5,7 +5,7 @@ services:
     container_name: bookshop
     image: rocky2017aaa/bookshop
     env_file:
-      - .env.docker
+      - ../.env.docker
     ports:
       - "8000:8000"
     restart: always
@@ -26,7 +26,7 @@ services:
       POSTGRES_PASSWORD: 1q2w3e4r
       POSTGRES_DB: bookshop
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../fixtures/init.sql:/docker-entrypoint-initdb.d/init.sql
       - $HOME/data/postgresql:/var/lib/postgresql/data
     ports:
       - "6000:5432"

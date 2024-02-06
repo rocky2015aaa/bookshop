@@ -2,8 +2,9 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import SQLModel, Session, create_engine
 import logging
+import os
 
-from database import get_session
+from database.database import get_session
 from exporter import DATABASE_URL
 from main import app
 
@@ -104,7 +105,7 @@ def test_success_cases(client):
     assert remove_inventory_response.json()["data"]["quantity"] == -3
 
     # POST /leftover/bulk
-    file_paths = ["./txt_example.txt", "./xls_example_correct.xlsx"]
+    file_paths = [os.path.abspath("../bookshop/fixtures/txt_example.txt"), os.path.abspath("../bookshop/fixtures/xls_example_correct.xlsx")]
     for file_path in file_paths:
         file_data = {'file': open(file_path, 'rb')}
         bulk_response = client.post("/leftover/bulk", files=file_data)
@@ -146,7 +147,7 @@ def test_failure_cases(client):
     assert response.status_code == 422
 
     # Internal Error
-    file_data = {'file': open("./xls_example_fail.xlsx", 'rb')}
+    file_data = {'file': open(os.path.abspath("../bookshop/fixtures/xls_example_fail.xlsx"), 'rb')}
     bulk_response = client.post("/leftover/bulk", files=file_data)
     assert bulk_response.status_code == 500
 
@@ -160,7 +161,6 @@ def test_failure_cases(client):
     ]
     for data in book_data:
         response = client.post("/book", json=data)
-
-    file_data = {'file': open("./xls_example_fail.xlsx", 'rb')}
+    file_data = {'file': open("../bookshop/fixtures/xls_example_fail.xlsx", 'rb')}
     bulk_response = client.post("/leftover/bulk", files=file_data)
     assert bulk_response.status_code == 400
