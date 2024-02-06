@@ -200,7 +200,6 @@ def add_inventory_bulk_handler(session: Session, request: pd.core.frame.DataFram
             # Fetch book data outside the loop
             barcode_int = int(barcode)
             book = session.query(Book).filter_by(barcode=str(barcode_int)).first()
-            
             if book:
                 inventory = Inventory(book_id=book.id, quantity=int(quantity), date=datetime.now().strftime("%Y-%m-%d"))
                 updated_items.append(inventory)  # Append the instance, not a dictionary
@@ -211,16 +210,6 @@ def add_inventory_bulk_handler(session: Session, request: pd.core.frame.DataFram
         # Batch insert updated items
         session.bulk_save_objects(updated_items)
         session.commit()
-        
-    except IntegrityError as e:
-        session.rollback()
-        logger.error(f"Integrity error: {e}")
-        raise DatabaseOperationError(f"Integrity error: {e}")
-        
-    except Exception as e:
-        session.rollback()
-        logger.error(f"Error adding bulk of inventory in DB: {e}")
-        raise DatabaseOperationError(f"Error adding bulk of inventory in DB: {e}")
         
     finally:
         session.close()
