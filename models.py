@@ -1,5 +1,6 @@
 from typing import Optional
 from datetime import datetime
+from sqlalchemy import Index
 
 from sqlmodel import SQLModel, Field, UniqueConstraint, Column, Integer
 from sqlalchemy import ForeignKey
@@ -41,8 +42,10 @@ class Author(SQLModel, table=True):
 
 
 class Book(SQLModel, table=True):
-    __table_args__ = (UniqueConstraint("title", "publish_year",
-                                       name="unique_title_publish_year"),)
+    __table_args__ = (
+        UniqueConstraint("title", "publish_year", name="unique_title_publish_year"),
+        Index('idx_publish_year', 'publish_year')  # Add this line to create an index on publish_year
+    )
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
     publish_year: int
