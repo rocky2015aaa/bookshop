@@ -44,7 +44,7 @@ class Author(SQLModel, table=True):
 class Book(SQLModel, table=True):
     __table_args__ = (
         UniqueConstraint("title", "publish_year", name="unique_title_publish_year"),
-        Index('idx_publish_year', 'publish_year')  # Add this line to create an index on publish_year
+        Index('idx_barcode', 'barcode')  # Add this line to create an index on barcode
     )
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
